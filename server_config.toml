@@ -1,0 +1,18 @@
+server_address = "127.0.0.1"
+ports = [8080, 8081]
+
+[max_body_size]
+max_body_size = 1048576 # 1 MiB
+
+[default_error_pages]
+"400" = "/path/to/400.html"
+"403" = "/path/to/403.html"
+"404" = "/path/to/404.html"
+"405" = "/path/to/405.html"
+"413" = "/path/to/413.html"
+"500" = "/path/to/500.html"
+
+[[routes]]
+path = "/example"
+methods = ["GET", "POST"]
+# Add other route-specific settings
