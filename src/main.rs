@@ -1,12 +1,20 @@
 use std::{ fs, io::{ prelude::*, BufReader }, net::{ TcpListener, TcpStream } };
 
 fn main() {
-    let listener = TcpListener::bind("127.0.0.1:7878").unwrap();
+    let listener_8888 = TcpListener::bind("127.0.0.1:8888").expect("Failed to bind 8888");
+    let listener_7878 = TcpListener::bind("127.0.0.1:7878").expect("Failed to bind 7878");
 
-    for stream in listener.incoming() {
-        let stream = stream.unwrap();
+    let mut incoming_7878 = listener_8888.incoming().peekable();
+    let mut incoming_8888 = listener_7878.incoming().peekable();
 
-        handle_connection(stream);
+    loop {
+        if let Some(Ok(stream_7878)) = incoming_7878.next() {
+            handle_connection(stream_7878);
+        }
+
+        if let Some(Ok(stream_8888)) = incoming_8888.next() {
+            handle_connection(stream_8888);
+        }
     }
 }
 
@@ -31,4 +39,10 @@ fn handle_connection(mut stream: TcpStream) {
 
         stream.write_all(response.as_bytes()).unwrap();
     }
+
+    /*     let mut buffer = [0; 1024];
+    stream.read(&mut buffer).expect("Failed to read from stream");
+    stream
+        .write_all(b"HTTP/1.1 200 OK\r\nContent-Length: 5\r\n\r\nHello")
+        .expect("Failed to write to stream"); */
 }
